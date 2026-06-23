@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sohani Ghugul — HR Manager Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DM+Sans:wght@400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --pink:      #ffadd0;
+  --pink-l:    #ffd6e7;
+  --pink-d:    #e8568f;
+  --lavender:  #c9b1ff;
+  --lav-l:     #e8d5ff;
+  --mint:      #8ce4b8;
+  --mint-l:    #b8f0d4;
+  --peach:     #ffc38a;
+  --peach-l:   #ffd9b3;
+  --yellow:    #ffe566;
+  --yellow-l:  #fff3b0;
+  --blue:      #96ceee;
+  --blue-l:    #bde8ff;
+  --white:     #fffdf9;
+  --dark:      #2d1f28;
+  --mid:       #6b4f5e;
+  --soft:      #a07a90;
+  --pixel:     'Press Start 2P', monospace;
+  --serif:     'DM Serif Display', Georgia, serif;
+  --sans:      'DM Sans', system-ui, sans-serif;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--sans);
+  background: var(--white);
+  color: var(--dark);
+  overflow: hidden;
+}
+
+/* ── SLIDESHOW SHELL ── */
+.slideshow {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 80px 24px 80px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.55s cubic-bezier(0.4,0,0.2,1),
+              transform 0.55s cubic-bezier(0.4,0,0.2,1);
+  transform: translateX(80px) scale(0.97);
+}
+.slide.active {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateX(0) scale(1);
+}
+.slide.exit-left  { opacity: 0; transform: translateX(-80px) scale(0.97); }
+.slide.exit-right { opacity: 0; transform: translateX(80px)  scale(0.97); }
+
+/* ── NAV BAR ── */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  background: rgba(255,253,249,0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 3px solid var(--pink);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 24px;
+}
+.nav-logo {
+  font-family: var(--pixel);
+  font-size: 10px;
+  color: var(--pink-d);
+  letter-spacing: 1px;
+}
+.nav-links {
+  display: flex;
+  gap: 4px;
+  list-style: none;
+}
+.nav-links button {
+  background: none;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--mid);
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.03em;
+}
+.nav-links button:hover,
+.nav-links button.active-link {
+  background: var(--pink-l);
+  border-color: var(--pink);
+  color: var(--pink-d);
+}
+
+/* ── SLIDE COUNTER & ARROWS ── */
+.slide-nav {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.slide-dot {
+  width: 10px; height: 10px;
+  border-radius: 2px;
+  background: var(--pink-l);
+  border: 2px solid var(--pink);
+  cursor: pointer;
+  transition: all 0.2s;
+  image-rendering: pixelated;
+}
+.slide-dot.active {
+  background: var(--pink-d);
+  border-color: var(--pink-d);
+  transform: scale(1.3);
+}
+.arrow-btn {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 200;
+  background: var(--white);
+  border: 3px solid var(--pink);
+  width: 40px; height: 40px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  font-family: var(--pixel);
+  color: var(--pink-d);
+  box-shadow: 3px 3px 0 var(--pink);
+}
+.arrow-btn:hover { background: var(--pink-l); transform: translateY(-50%) scale(1.1); }
+.arrow-prev { left: 12px; }
+.arrow-next { right: 12px; }
+.arrow-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.arrow-btn:disabled:hover { transform: translateY(-50%) scale(1); }
+
+/* ── SHARED COMPONENTS ── */
+.pixel-card {
+  background: #fff;
+  border: 3px solid var(--dark);
+  box-shadow: 5px 5px 0 var(--dark);
+  border-radius: 4px;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.pixel-card:hover {
+  transform: translateY(-3px) rotate(0.3deg);
+  box-shadow: 8px 8px 0 var(--dark);
+}
+.pushpin {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px; height: 18px;
+  background: var(--pink-d);
+  border: 2px solid var(--dark);
+  border-radius: 50%;
+  z-index: 2;
+}
+.pushpin::after {
+  content: '';
+  position: absolute;
+  bottom: -6px; left: 50%;
+  transform: translateX(-50%);
+  width: 4px; height: 8px;
+  background: var(--dark);
+  border-radius: 2px;
+}
+
+.sec-title {
+  font-family: var(--pixel);
+  font-size: 14px;
+  color: var(--dark);
+  letter-spacing: 1px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sec-title::before {
+  content: '';
+  display: inline-block;
+  width: 12px; height: 12px;
+  background: var(--pink-d);
+  border: 2px solid var(--dark);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 2px solid var(--dark);
+  border-radius: 4px;
+  padding: 5px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  box-shadow: 2px 2px 0 var(--dark);
+}
+
+.chip {
+  font-size: 11px;
+  border: 2px solid var(--dark);
+  border-radius: 4px;
+  padding: 3px 10px;
+  font-weight: 600;
+  box-shadow: 2px 2px 0 var(--dark);
+  display: inline-block;
+}
+
+.pill {
+  font-size: 11px;
+  border: 2px solid currentColor;
+  border-radius: 3px;
+  padding: 3px 10px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── CUTE SVG CUTOUTS ── */
+.cutout {
+  position: absolute;
+  pointer-events: none;
+  animation: float 4s ease-in-out infinite;
+}
+.cutout:nth-child(2) { animation-delay: -1s; }
+.cutout:nth-child(3) { animation-delay: -2s; }
+.cutout:nth-child(4) { animation-delay: -0.5s; }
+.cutout:nth-child(5) { animation-delay: -1.5s; }
+.cutout:nth-child(6) { animation-delay: -2.5s; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50%       { transform: translateY(-8px) rotate(2deg); }
+}
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes pulse-scale {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.15); }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-5deg); }
+  50%       { transform: rotate(5deg); }
+}
+@keyframes bounce-in {
+  0%   { opacity: 0; transform: scale(0.4) rotate(-10deg); }
+  60%  { transform: scale(1.15) rotate(3deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes shimmer {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+/* ── SLIDE 0 — HERO ── */
+#slide-0 { background: linear-gradient(145deg, var(--pink-l) 0%, var(--lav-l) 50%, var(--blue-l) 100%); }
+
+.hero-inner {
+  max-width: 700px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  padding-top: 20px;
+}
+
+.hero-name {
+  font-family: var(--pixel);
+  font-size: clamp(28px, 6vw, 52px);
+  line-height: 1.3;
+  letter-spacing: 2px;
+}
+.hero-name span.pink { color: var(--pink-d); }
+
+.hero-tagline {
+  font-size: 15px;
+  color: var(--mid);
+  line-height: 1.8;
+  max-width: 520px;
+  background: rgba(255,255,255,0.7);
+  border: 3px solid var(--dark);
+  border-radius: 4px;
+  padding: 14px 20px;
+  box-shadow: 4px 4px 0 var(--dark);
+}
+
+.hero-quote {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--mid);
+  border-left: 4px solid var(--pink);
+  padding-left: 14px;
+  text-align: left;
+  max-width: 420px;
+  align-self: center;
+}
+
+.hero-btns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn {
+  font-family: var(--pixel);
+  font-size: 9px;
+  border: 3px solid var(--dark);
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 4px 4px 0 var(--dark);
+  letter-spacing: 0.5px;
+}
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 6px 6px 0 var(--dark);
+}
+.btn:active {
+  transform: translateY(1px);
+  box-shadow: 2px 2px 0 var(--dark);
+}
+.btn-pink  { background: var(--pink-d); color: #fff; }
+.btn-green { background: var(--mint); color: var(--dark); }
+.btn-lav   { background: var(--lavender); color: var(--dark); }
+
+.stat-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 4px;
+}
+.stat-pill {
+  background: #fff;
+  border: 3px solid var(--dark);
+  border-radius: 4px;
+  padding: 10px 16px;
+  text-align: center;
+  box-shadow: 3px 3px 0 var(--dark);
+  min-width: 120px;
+  position: relative;
+}
+.stat-pill .pushpin { background: var(--yellow); }
+.stat-num {
+  font-family: var(--pixel);
+  font-size: 18px;
+  color: var(--pink-d);
+  line-height: 1.2;
+}
+.stat-lbl {
+  font-size: 10px;
+  color: var(--soft);
+  margin-top: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ── SLIDE 1 — ABOUT ── */
+#slide-1 { background: linear-gradient(145deg, var(--yellow-l) 0%, var(--pink-l) 100%); }
+
+.about-grid {
+  max-width: 800px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 20px;
+  align-items: start;
+}
+.about-text {
+  background: rgba(255,255,255,0.85);
+  border: 3px solid var(--dark);
+  border-radius: 4px;
+  padding: 20px 24px;
+  box-shadow: 5px 5px 0 var(--dark);
+  font-size: 14px;
+  color: var(--mid);
+  line-height: 1.8;
+  position: relative;
+}
+.about-text p + p { margin-top: 10px; }
+.hl { color: var(--pink-d); font-weight: 600; }
+.hl-g { color: #2e8b57; font-weight: 600; }
+
+.about-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.acard {
+  border: 3px solid var(--dark);
+  border-radius: 4px;
+  padding: 12px 14px;
+  position: relative;
+  box-shadow: 4px 4px 0 var(--dark);
+}
+.acard-title {
+  font-size: 9px;
+  font-family: var(--pixel);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  opacity: 0.7;
+}
+.acard-val {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  line-height: 1.2;
+}
+.acard-sub { font-size: 11px; margin-top: 2px; opacity: 0.7; }
+.quirk {
+  margin-top: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 2px solid var(--pink);
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-size: 12px;
+  color: var(--mid);
+  background: var(--pink-l);
+  box-shadow: 2px 2px 0 var(--dark);
+}
+
+/* ── SLIDE 2 — SKILLS ── */
+#slide-2 { background: linear-gradient(145deg, var(--mint-l) 0%, var(--lav-l) 100%); }
+
+.skills-wrap {
+  max-width: 780px;
+  width: 100%;
+}
+.skills-masonry {
+  column-count: 2;
+  column-gap: 16px;
+  margin-bottom: 20px;
+}
+.skill-card {
+  break-inside: avoid;
+  margin-bottom: 16px;
+  background: #fff;
+  border: 3px solid var(--dark);
+  border-radius: 4px;
+  padding: 16px;
+  box-shadow: 4px 4px 0 var(--dark);
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.skill-card:hover {
+  transform: translateY(-3px) rotate(-0.5deg);
+  box-shadow: 7px 7px 0 var(--dark);
+}
+.skill-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 8px;
+  font-family: var(--pixel);
+  font-size: 9px;
+  line-height: 1.5;
+}
+.skill-bar-bg {
+  height: 12px;
+  background: #f0f0f0;
+  border: 2px solid var(--dark);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.skill-bar {
+  height: 100%;
+  border-radius: 0;
+  width: 0%;
+  transition: width 1.4s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+}
+.skill-bar::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 4px; height: 100%;
+  background: rgba(255,255,255,0.4);
+}
+.skill-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.sk-tag {
+  font-size: 10px;
+  border: 2px solid var(--dark);
+  border-radius: 3px;
+  padding: 2px 8px;
+  font-weight: 600;
+}
+
+.tools-section { margin-top: 4px; }
+.tools-label {
+  font-family: var(--pixel);
+  font-size: 8px;
+  color: var(--soft);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.tools-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.tool-pill {
+  font-size: 11px;
+  border: 2px solid var(--dark);
+  border-radius: 3px;
+  padding: 3px 10px;
+  font-weight: 600;
+  background: #fff;
+  box-shadow: 2px 2px 0 var(--dark);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.soft-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.soft-pill {
+  font-size: 11px;
+  border: 2px solid var(--dark);
+  border-radius: 3px;
+  padding: 3px 10px;
+  font-weight: 600;
+  box-shadow: 2px 2px 0 var(--dark);
+}
+
+/* ── SLIDE 3 — EXPERIENCE ── */
+#slide-3 { background: linear-gradient(145deg, var(--peach-l) 0%, var(--pink-l) 100%); }
+
+.exp-wrap {
+  max-width: 720px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.exp-card {
+  background: #fff;
+  border: 3px solid var(--dark);
+  border-radius: 4px;
+  padding: 18px 20px;
+  box-shadow: 5px 5px 0 var(--dark);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.exp-card:hover { transform: translateY(-2px); box-shadow: 7px 7px 0 var(--dark); }
+.exp-accent {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 6px;
+  border-radius: 0;
+}
+.exp-content { padding-left: 12px; }
+.exp-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+  gap: 8px;
+}
+.exp-role { font-family: var(--pixel); font-size: 9px; line-height: 1.5; color: var(--dark); }
+.exp-date {
+  font-size: 10px;
+  font-weight: 600;
+  background: var(--pink-l);
+  border: 2px solid var(--dark);
+  border-radius: 3px;
+  padding: 2px 8px;
+  white-space: nowrap;
+  box-shadow: 2px 2px 0 var(--dark);
+  flex-shrink: 0;
+}
+.exp-company { font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+.exp-desc { font-size: 12px; color: var(--mid); line-height: 1.7; margin-bottom: 10px; }
+.exp-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.exp-chip {
+  font-size: 10px;
+  font-weight: 600;
+  border: 2px solid var(--dark);
+  border-radius: 3px;
+  padding: 2px 8px;
+  box-shadow: 2px 2px 0 var(--dark);
+}
+
+.cert-card {
+  background: var(--mint-l);
+  border: 3px solid var(--dark);
+  border-radius: 4px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 4px 4px 0 var(--dark);
+}
+.cert-icon-box {
+  width: 44px; height: 44px;
+  background: var(--mint);
+  border: 2px solid var(--dark);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 2px 2px 0 var(--dark);
+}
+.cert-icon-box svg { width: 24px; height: 24px; }
+.cert-name { font-size: 13px; font-weight: 700; color: var(--dark); }
+.cert-issuer { font-size: 11px; color: var(--mid); margin-top: 2px; }
+
+/* ── SLIDE 4 — PROJECTS ── */
+#slide-4 { background: linear-gradient(145deg, var(--blue-l) 0%, var(--mint-l) 100%); }
+
+.projects-masonry {
+  max-width: 780px;
+  width: 100%;
+  column-count: 2;
+  column-gap: 16px;
+}
+.proj-card {
+  break-inside: avoid;
+  margin-bottom: 16px;
+  background: #fff;
+  border: 3px solid var(--dark);
+  border-radius: 4px;
+  padding: 16px;
+  box-shadow: 5px 5px 0 var(--dark);
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.proj-card:hover {
+  transform: translateY(-4px) rotate(-0.5deg);
+  box-shadow: 8px 8px 0 var(--dark);
+}
+.proj-num {
+  font-family: var(--pixel);
+  font-size: 7px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.proj-title { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 8px; }
+.proj-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.proj-desc { font-size: 12px; color: var(--mid); line-height: 1.65; margin-bottom: 8px; }
+.proj-foot {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 2px solid #e0e0e0;
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── SLIDE 5 — CERTIFICATIONS ── */
+#slide-5 { background: linear-gradient(145deg, var(--lav-l) 0%, var(--yellow-l) 100%); }
+
+.certs-wrap {
+  max-width: 700px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+.cert-full-card {
+  background: #fff;
+  border: 3px solid var(--dark);
+  border-radius: 4px;
+  padding: 20px 24px;
+  box-shadow: 6px 6px 0 var(--dark);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.cert-full-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 9px 9px 0 var(--dark);
+}
+.cert-ribbon {
+  position: absolute;
+  top: -2px; right: 16px;
+  width: 0; height: 0;
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-top: 18px solid var(--yellow);
+}
+
+/* ── SLIDE 6 — CONTACT ── */
+#slide-6 { background: linear-gradient(145deg, var(--pink-l) 0%, var(--lav-l) 100%); }
+
+.contact-wrap {
+  max-width: 720px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+.contact-intro {
+  font-size: 14px;
+  color: var(--mid);
+  line-height: 1.8;
+  margin-bottom: 18px;
+  background: rgba(255,255,255,0.7);
+  border: 3px solid var(--dark);
+  border-radius: 4px;
+  padding: 14px;
+  box-shadow: 3px 3px 0 var(--dark);
+}
+.contact-links { display: flex; flex-direction: column; gap: 10px; }
+.contact-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--mid);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.contact-row:hover { color: var(--pink-d); }
+.c-icon {
+  width: 38px; height: 38px;
+  border: 2px solid var(--dark);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--pink-l);
+  box-shadow: 2px 2px 0 var(--dark);
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.contact-row:hover .c-icon { background: var(--pink); }
+
+.contact-form {
+  background: #fff;
+  border: 3px solid var(--dark);
+  border-radius: 4px;
+  padding: 20px;
+  box-shadow: 5px 5px 0 var(--dark);
+  position: relative;
+}
+.f-label {
+  display: block;
+  font-family: var(--pixel);
+  font-size: 8px;
+  color: var(--soft);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+.f-input {
+  width: 100%;
+  background: var(--white);
+  border: 2px solid var(--dark);
+  border-radius: 3px;
+  padding: 8px 10px;
+  color: var(--dark);
+  font-family: var(--sans);
+  font-size: 13px;
+  outline: none;
+  margin-bottom: 12px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 2px 2px 0 var(--dark);
+}
+.f-input:focus { border-color: var(--pink-d); box-shadow: 3px 3px 0 var(--pink-d); }
+.f-input::placeholder { color: var(--pink); }
+textarea.f-input { resize: none; height: 72px; }
+
+.form-success {
+  display: none;
+  text-align: center;
+  padding: 20px;
+  font-family: var(--pixel);
+  font-size: 10px;
+  color: #2e8b57;
+  line-height: 1.8;
+}
+
+/* ── FOOTER ── */
+.footer-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 100;
+  background: var(--dark);
+  color: var(--pink-l);
+  padding: 6px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+}
+.footer-bar span { font-family: var(--serif); font-style: italic; }
+.footer-bar small { font-family: var(--pixel); font-size: 8px; color: var(--pink); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 680px) {
+  .about-grid, .contact-wrap { grid-template-columns: 1fr; }
+  .skills-masonry, .projects-masonry { column-count: 1; }
+  .nav-links { display: none; }
+  .hero-name { font-size: 22px; }
+  .stat-row { flex-direction: column; align-items: center; }
+}
+
+/* ── ENTRANCE ANIMATIONS ── */
+.slide.active .hero-inner > * {
+  animation: slide-up 0.5s ease both;
+}
+.slide.active .hero-inner > *:nth-child(1) { animation-delay: 0.05s; }
+.slide.active .hero-inner > *:nth-child(2) { animation-delay: 0.12s; }
+.slide.active .hero-inner > *:nth-child(3) { animation-delay: 0.19s; }
+.slide.active .hero-inner > *:nth-child(4) { animation-delay: 0.26s; }
+.slide.active .hero-inner > *:nth-child(5) { animation-delay: 0.33s; }
+.slide.active .hero-inner > *:nth-child(6) { animation-delay: 0.40s; }
+
+.slide.active .about-grid,
+.slide.active .exp-card,
+.slide.active .skill-card,
+.slide.active .proj-card,
+.slide.active .cert-full-card,
+.slide.active .contact-wrap > * {
+  animation: bounce-in 0.5s ease both;
+}
+.slide.active .about-grid { animation-delay: 0.1s; }
+.slide.active .exp-card:nth-child(1) { animation-delay: 0.1s; }
+.slide.active .exp-card:nth-child(2) { animation-delay: 0.2s; }
+.slide.active .exp-card:nth-child(3) { animation-delay: 0.3s; }
+.slide.active .skill-card:nth-child(1) { animation-delay: 0.08s; }
+.slide.active .skill-card:nth-child(2) { animation-delay: 0.18s; }
+.slide.active .skill-card:nth-child(3) { animation-delay: 0.28s; }
+.slide.active .skill-card:nth-child(4) { animation-delay: 0.38s; }
+.slide.active .proj-card:nth-child(1) { animation-delay: 0.05s; }
+.slide.active .proj-card:nth-child(2) { animation-delay: 0.15s; }
+.slide.active .proj-card:nth-child(3) { animation-delay: 0.25s; }
+.slide.active .proj-card:nth-child(4) { animation-delay: 0.35s; }
+.slide.active .cert-full-card { animation-delay: 0.1s; }
+.slide.active .contact-wrap > *:nth-child(1) { animation-delay: 0.1s; }
+.slide.active .contact-wrap > *:nth-child(2) { animation-delay: 0.22s; }
+
+/* ── SPARKLE CURSOR ── */
+.sparkle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  animation: sparkle-die 0.8s forwards;
+}
+@keyframes sparkle-die {
+  0%   { opacity: 1; transform: scale(1) translateY(0); }
+  100% { opacity: 0; transform: scale(0) translateY(-20px); }
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav class="nav">
+  <div class="nav-logo">Sohani&nbsp;Ghugul</div>
+  <ul class="nav-links">
+    <li><button onclick="goTo(0)" id="nl-0">Hero</button></li>
+    <li><button onclick="goTo(1)" id="nl-1">About</button></li>
+    <li><button onclick="goTo(2)" id="nl-2">Skills</button></li>
+    <li><button onclick="goTo(3)" id="nl-3">Experience</button></li>
+    <li><button onclick="goTo(4)" id="nl-4">Projects</button></li>
+    <li><button onclick="goTo(5)" id="nl-5">Certs</button></li>
+    <li><button onclick="goTo(6)" id="nl-6">Contact</button></li>
+  </ul>
+</nav>
+
+<!-- ── PREV / NEXT ARROWS ── -->
+<button class="arrow-btn arrow-prev" id="btn-prev" onclick="prev()" aria-label="Previous slide">&#8592;</button>
+<button class="arrow-btn arrow-next" id="btn-next" onclick="next()" aria-label="Next slide">&#8594;</button>
+
+<!-- ════════════════════════════════════════
+     SLIDE 0 — HERO
+═════════════════════════════════════════ -->
+<section class="slide active" id="slide-0">
+
+  <!-- Pixel-art SVG cutouts -->
+  <svg class="cutout" style="top:8%;left:4%;width:52px;" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+    <!-- Coffee cup -->
+    <rect x="8" y="18" width="24" height="16" rx="0" fill="#ffd9b3" stroke="#2d1f28" stroke-width="2"/>
+    <rect x="8" y="14" width="24" height="6" rx="0" fill="#ffc38a" stroke="#2d1f28" stroke-width="2"/>
+    <rect x="30" y="20" width="6" height="8" rx="0" fill="none" stroke="#2d1f28" stroke-width="2"/>
+    <!-- Steam -->
+    <path d="M14 12 Q16 8 14 4" fill="none" stroke="#c9b1ff" stroke-width="2" stroke-linecap="round"/>
+    <path d="M20 10 Q22 6 20 2" fill="none" stroke="#c9b1ff" stroke-width="2" stroke-linecap="round"/>
+    <path d="M26 12 Q28 8 26 4" fill="none" stroke="#c9b1ff" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+
+  <svg class="cutout" style="top:12%;right:6%;width:44px;animation-delay:-1.5s;" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+    <!-- Pixel star -->
+    <polygon points="20,4 24,14 36,14 27,22 30,34 20,27 10,34 13,22 4,14 16,14" fill="#ffe566" stroke="#2d1f28" stroke-width="2" stroke-linejoin="round"/>
+  </svg>
+
+  <svg class="cutout" style="bottom:22%;left:3%;width:48px;animation-delay:-0.8s;" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+    <!-- Flower -->
+    <circle cx="20" cy="20" r="6" fill="#ffe566" stroke="#2d1f28" stroke-width="2"/>
+    <ellipse cx="20" cy="8" rx="5" ry="7" fill="#ffadd0" stroke="#2d1f28" stroke-width="2"/>
+    <ellipse cx="20" cy="32" rx="5" ry="7" fill="#ffadd0" stroke="#2d1f28" stroke-width="2"/>
+    <ellipse cx="8" cy="20" rx="7" ry="5" fill="#c9b1ff" stroke="#2d1f28" stroke-width="2"/>
+    <ellipse cx="32" cy="20" rx="7" ry="5" fill="#c9b1ff" stroke="#2d1f28" stroke-width="2"/>
+    <ellipse cx="11" cy="11" rx="5" ry="7" transform="rotate(-45 11 11)" fill="#8ce4b8" stroke="#2d1f28" stroke-width="2"/>
+    <ellipse cx="29" cy="29" rx="5" ry="7" transform="rotate(-45 29 29)" fill="#8ce4b8" stroke="#2d1f28" stroke-width="2"/>
+    <ellipse cx="29" cy="11" rx="5" ry="7" transform="rotate(45 29 11)" fill="#96ceee" stroke="#2d1f28" stroke-width="2"/>
+    <ellipse cx="11" cy="29" rx="5" ry="7" transform="rotate(45 11 29)" fill="#96ceee" stroke="#2d1f28" stroke-width="2"/>
+  </svg>
+
+  <svg class="cutout" style="bottom:20%;right:4%;width:46px;animation-delay:-2.2s;" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+    <!-- Heart -->
+    <path d="M20 34 C20 34 4 22 4 12 A8 8 0 0 1 20 8 A8 8 0 0 1 36 12 C36 22 20 34 20 34Z" fill="#ffadd0" stroke="#2d1f28" stroke-width="2"/>
+  </svg>
+
+  <svg class="cutout" style="top:50%;right:2%;width:40px;animation-delay:-1s;" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+    <!-- Bow -->
+    <path d="M20 20 L6 10 L6 30 Z" fill="#ffd6e7" stroke="#2d1f28" stroke-width="2"/>
+    <path d="M20 20 L34 10 L34 30 Z" fill="#c9b1ff" stroke="#2d1f28" stroke-width="2"/>
+    <circle cx="20" cy="20" r="4" fill="#ffe566" stroke="#2d1f28" stroke-width="2"/>
+  </svg>
+
+  <svg class="cutout" style="top:40%;left:2%;width:38px;animation-delay:-3s;" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+    <!-- Sparkle -->
+    <path d="M20 4 L22 18 L36 20 L22 22 L20 36 L18 22 L4 20 L18 18 Z" fill="#ffe566" stroke="#2d1f28" stroke-width="2"/>
+  </svg>
+
+  <div class="hero-inner">
+    <div class="badge" style="background:var(--pink-l);color:var(--mid);">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      HR Manager · Intern at Uzi World Digital
+    </div>
+
+    <h1 class="hero-name">
+      Sohani<br>
+      <span class="pink">Ghugul</span>
+    </h1>
+
+    <p class="hero-tagline">
+      Where psychology meets people strategy — I don't just fill roles, I find the humans behind every resume and build the culture around them.
+    </p>
+
+    <blockquote class="hero-quote">
+      "People are not your most important asset. The right people are." — Jim Collins
+    </blockquote>
+
+    <div class="badge" style="background:var(--mint-l);color:#2e7d52;border-color:var(--dark);">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Vision: To build workplaces where every person feels seen, valued, and empowered to grow.
+    </div>
+
+    <div class="hero-btns">
+      <button class="btn btn-pink" onclick="goTo(6)">Say hello</button>
+      <button class="btn btn-green" onclick="goTo(3)">My experience</button>
+      <button class="btn btn-lav" onclick="goTo(1)">About me</button>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-pill pixel-card">
+        <div class="pushpin"></div>
+        <div class="stat-num">15+</div>
+        <div class="stat-lbl">Candidates screened</div>
+      </div>
+      <div class="stat-pill pixel-card" style="background:var(--mint-l);">
+        <div class="pushpin" style="background:var(--mint);"></div>
+        <div class="stat-num" style="color:#2e8b57;">5+</div>
+        <div class="stat-lbl">Roles recruited</div>
+      </div>
+      <div class="stat-pill pixel-card" style="background:var(--lav-l);">
+        <div class="pushpin" style="background:var(--lavender);"></div>
+        <div class="stat-num" style="color:#7b52d9;">2</div>
+        <div class="stat-lbl">Certifications</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     SLIDE 1 — ABOUT
+═════════════════════════════════════════ -->
+<section class="slide" id="slide-1">
+
+  <svg class="cutout" style="top:10%;right:5%;width:50px;" viewBox="0 0 40 40">
+    <!-- Cat face -->
+    <rect x="6" y="12" width="28" height="22" rx="4" fill="#ffd6e7" stroke="#2d1f28" stroke-width="2"/>
+    <polygon points="6,16 2,4 14,12" fill="#ffd6e7" stroke="#2d1f28" stroke-width="2"/>
+    <polygon points="34,16 38,4 26,12" fill="#ffd6e7" stroke="#2d1f28" stroke-width="2"/>
+    <circle cx="14" cy="22" r="3" fill="#2d1f28"/>
+    <circle cx="26" cy="22" r="3" fill="#2d1f28"/>
+    <circle cx="15" cy="21" r="1" fill="#fff"/>
+    <circle cx="27" cy="21" r="1" fill="#fff"/>
+    <path d="M20 26 Q16 30 12 28" fill="none" stroke="#2d1f28" stroke-width="1.5"/>
+    <path d="M20 26 Q24 30 28 28" fill="none" stroke="#2d1f28" stroke-width="1.5"/>
+    <rect x="19" y="24" width="2" height="3" rx="1" fill="#ffadd0" stroke="#2d1f28" stroke-width="1"/>
+  </svg>
+
+  <svg class="cutout" style="bottom:15%;left:3%;width:46px;animation-delay:-2s;" viewBox="0 0 40 40">
+    <!-- Mushroom -->
+    <ellipse cx="20" cy="20" rx="14" ry="10" fill="#ffadd0" stroke="#2d1f28" stroke-width="2"/>
+    <rect x="14" y="20" width="12" height="12" rx="2" fill="#fffdf9" stroke="#2d1f28" stroke-width="2"/>
+    <circle cx="14" cy="14" r="3" fill="#fff" stroke="none"/>
+    <circle cx="26" cy="16" r="2.5" fill="#fff" stroke="none"/>
+    <circle cx="20" cy="12" r="3" fill="#fff" stroke="none"/>
+  </svg>
+
+  <div class="sec-title" style="align-self:flex-start;max-width:800px;width:100%;">About me</div>
+  <div class="about-grid">
+    <div class="about-text" style="transform:rotate(-0.5deg);">
+      <div class="pushpin"></div>
+      <p style="margin-top:10px;">I'm <span class="hl">Sohani</span>, an <span class="hl">HR Manager</span> whose love for people started long before the job title. Growing up endlessly curious about <span class="hl">why people do what they do</span>, I naturally gravitated toward psychology and the science of human behavior.</p>
+      <p>That curiosity is what brought me to HR. I believe understanding what motivates people — what makes them feel belonging, what makes them want to show up — is the single most powerful tool any HR professional can have.</p>
+      <p>At <span class="hl-g">Uzi World Digital</span>, I've turned that belief into practice: conducting screenings and interviews, coordinating onboarding, supporting HR documentation, and contributing to a culture people actually enjoy being part of.</p>
+      <div class="quirk">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>
+        obsessed with iced coffee and org charts
+      </div>
+    </div>
+
+    <div class="about-cards">
+      <div class="acard" style="background:var(--pink-l);transform:rotate(1deg);">
+        <div class="pushpin" style="background:var(--pink-d);"></div>
+        <div class="acard-title" style="color:var(--pink-d);margin-top:8px;">Currently</div>
+        <div class="acard-val" style="color:var(--pink-d);">HR Manager Intern</div>
+        <div class="acard-sub">Uzi World Digital</div>
+      </div>
+      <div class="acard" style="background:var(--mint-l);transform:rotate(-1.5deg);">
+        <div class="pushpin" style="background:var(--mint);"></div>
+        <div class="acard-title" style="color:#2e8b57;margin-top:8px;">Certified by</div>
+        <div class="acard-val" style="color:#2e8b57;">Univ. of Minnesota</div>
+        <div class="acard-sub">HR for People Managers</div>
+      </div>
+      <div class="acard" style="background:var(--lav-l);transform:rotate(1deg);">
+        <div class="pushpin" style="background:var(--lavender);"></div>
+        <div class="acard-title" style="color:#7b52d9;margin-top:8px;">Based in</div>
+        <div class="acard-val" style="color:#7b52d9;font-size:0.95rem;">Nagpur, Maharashtra</div>
+      </div>
+      <div class="acard" style="background:var(--yellow-l);transform:rotate(-0.8deg);">
+        <div class="pushpin" style="background:var(--yellow);"></div>
+        <div class="acard-title" style="color:#b8860b;margin-top:8px;">Superpower</div>
+        <div class="acard-val" style="color:#b8860b;font-size:0.9rem;">Psychology-driven people intuition</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     SLIDE 2 — SKILLS
+═════════════════════════════════════════ -->
+<section class="slide" id="slide-2">
+
+  <svg class="cutout" style="top:12%;right:4%;width:44px;" viewBox="0 0 40 40">
+    <!-- Pencil -->
+    <rect x="8" y="4" width="10" height="28" rx="1" fill="#ffe566" stroke="#2d1f28" stroke-width="2"/>
+    <polygon points="8,32 18,32 13,38" fill="#ffadd0" stroke="#2d1f28" stroke-width="2"/>
+    <rect x="8" y="4" width="10" height="6" fill="#c9b1ff" stroke="#2d1f28" stroke-width="2"/>
+    <rect x="8" y="16" width="10" height="2" fill="#ffc38a" stroke="none"/>
+  </svg>
+
+  <svg class="cutout" style="bottom:18%;left:3%;width:48px;animation-delay:-1.2s;" viewBox="0 0 40 40">
+    <!-- Mini cactus -->
+    <rect x="14" y="12" width="12" height="22" rx="2" fill="#8ce4b8" stroke="#2d1f28" stroke-width="2"/>
+    <rect x="6" y="18" width="10" height="8" rx="2" fill="#8ce4b8" stroke="#2d1f28" stroke-width="2"/>
+    <rect x="24" y="22" width="10" height="6" rx="2" fill="#8ce4b8" stroke="#2d1f28" stroke-width="2"/>
+    <rect x="10" y="34" width="20" height="4" rx="2" fill="#ffd9b3" stroke="#2d1f28" stroke-width="2"/>
+    <circle cx="20" cy="10" r="2" fill="#ffadd0" stroke="#2d1f28" stroke-width="1.5"/>
+  </svg>
+
+  <div class="sec-title" style="align-self:flex-start;max-width:780px;width:100%;" data-dot-color="var(--mint)">Skills &amp; expertise</div>
+
+  <div class="skills-wrap">
+    <div class="skills-masonry">
+      <div class="skill-card" style="transform:rotate(-0.8deg);">
+        <div class="pushpin" style="background:var(--pink-d);"></div>
+        <div class="skill-name" style="margin-top:10px;">Talent acquisition &amp; hiring</div>
+        <div class="skill-bar-bg"><div class="skill-bar" data-w="88" style="background:linear-gradient(90deg,var(--pink),var(--pink-d));"></div></div>
+        <div class="skill-tags">
+          <span class="sk-tag" style="background:var(--pink-l);">JD Writing</span>
+          <span class="sk-tag" style="background:var(--pink-l);">Screening</span>
+          <span class="sk-tag" style="background:var(--pink-l);">Structured Interviews</span>
+          <span class="sk-tag" style="background:var(--pink-l);">Onboarding</span>
+        </div>
+      </div>
+
+      <div class="skill-card" style="transform:rotate(1.2deg);">
+        <div class="pushpin" style="background:var(--mint);"></div>
+        <div class="skill-name" style="margin-top:10px;">Employee engagement &amp; culture</div>
+        <div class="skill-bar-bg"><div class="skill-bar" data-w="85" style="background:linear-gradient(90deg,var(--mint),#2e8b57);"></div></div>
+        <div class="skill-tags">
+          <span class="sk-tag" style="background:var(--mint-l);">Culture Building</span>
+          <span class="sk-tag" style="background:var(--mint-l);">Retention</span>
+          <span class="sk-tag" style="background:var(--mint-l);">D&amp;I</span>
+          <span class="sk-tag" style="background:var(--mint-l);">Surveys</span>
+        </div>
+      </div>
+
+      <div class="skill-card" style="transform:rotate(-1deg);">
+        <div class="pushpin" style="background:var(--lavender);"></div>
+        <div class="skill-name" style="margin-top:10px;">Performance management</div>
+        <div class="skill-bar-bg"><div class="skill-bar" data-w="82" style="background:linear-gradient(90deg,var(--lavender),#7b52d9);"></div></div>
+        <div class="skill-tags">
+          <span class="sk-tag" style="background:var(--lav-l);">OKRs &amp; KPIs</span>
+          <span class="sk-tag" style="background:var(--lav-l);">360° Reviews</span>
+          <span class="sk-tag" style="background:var(--lav-l);">Appraisals</span>
+          <span class="sk-tag" style="background:var(--lav-l);">PIP Design</span>
+        </div>
+      </div>
+
+      <div class="skill-card" style="transform:rotate(0.7deg);">
+        <div class="pushpin" style="background:var(--peach);"></div>
+        <div class="skill-name" style="margin-top:10px;">Learning &amp; development</div>
+        <div class="skill-bar-bg"><div class="skill-bar" data-w="80" style="background:linear-gradient(90deg,var(--peach),#d2691e);"></div></div>
+        <div class="skill-tags">
+          <span class="sk-tag" style="background:var(--peach-l);">Training Design</span>
+          <span class="sk-tag" style="background:var(--peach-l);">Needs Analysis</span>
+          <span class="sk-tag" style="background:var(--peach-l);">Career Pathing</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tools-section">
+      <div class="tools-label">HR tools &amp; platforms I use</div>
+      <div class="tools-row">
+        <span class="tool-pill" style="background:var(--pink-l);">Google Workspace</span>
+        <span class="tool-pill" style="background:var(--mint-l);">Excel / Sheets</span>
+        <span class="tool-pill" style="background:var(--blue-l);">LinkedIn Recruiter</span>
+        <span class="tool-pill" style="background:var(--lav-l);">Notion</span>
+        <span class="tool-pill" style="background:var(--peach-l);">Canva</span>
+        <span class="tool-pill" style="background:var(--yellow-l);">WhatsApp for Teams</span>
+        <span class="tool-pill" style="background:var(--pink-l);">Gmail</span>
+        <span class="tool-pill" style="background:var(--mint-l);">Google Forms</span>
+      </div>
+      <div class="tools-label" style="margin-top:12px;">Human skills</div>
+      <div class="soft-row">
+        <span class="soft-pill" style="background:var(--pink-l);">Adaptability</span>
+        <span class="soft-pill" style="background:var(--mint-l);">Confidentiality</span>
+        <span class="soft-pill" style="background:var(--lav-l);">Empathy</span>
+        <span class="soft-pill" style="background:var(--yellow-l);">Discretion</span>
+        <span class="soft-pill" style="background:var(--peach-l);">Attention to detail</span>
+        <span class="soft-pill" style="background:var(--blue-l);">Active listening</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     SLIDE 3 — EXPERIENCE
+═════════════════════════════════════════ -->
+<section class="slide" id="slide-3">
+
+  <svg class="cutout" style="top:10%;right:4%;width:48px;" viewBox="0 0 40 40">
+    <!-- Cloud -->
+    <ellipse cx="20" cy="26" rx="14" ry="8" fill="#bde8ff" stroke="#2d1f28" stroke-width="2"/>
+    <ellipse cx="14" cy="22" rx="8" ry="8" fill="#bde8ff" stroke="#2d1f28" stroke-width="2"/>
+    <ellipse cx="26" cy="22" rx="8" ry="8" fill="#bde8ff" stroke="#2d1f28" stroke-width="2"/>
+    <ellipse cx="20" cy="18" rx="7" ry="7" fill="#bde8ff" stroke="#2d1f28" stroke-width="2"/>
+  </svg>
+
+  <svg class="cutout" style="bottom:20%;left:3%;width:44px;animation-delay:-2.5s;" viewBox="0 0 40 40">
+    <!-- Butterfly -->
+    <ellipse cx="10" cy="16" rx="8" ry="10" fill="#c9b1ff" stroke="#2d1f28" stroke-width="2"/>
+    <ellipse cx="30" cy="16" rx="8" ry="10" fill="#ffadd0" stroke="#2d1f28" stroke-width="2"/>
+    <ellipse cx="12" cy="28" rx="6" ry="7" fill="#e8d5ff" stroke="#2d1f28" stroke-width="2"/>
+    <ellipse cx="28" cy="28" rx="6" ry="7" fill="#ffd6e7" stroke="#2d1f28" stroke-width="2"/>
+    <line x1="20" y1="10" x2="20" y2="36" stroke="#2d1f28" stroke-width="2"/>
+    <path d="M20 10 Q22 4 24 8" fill="none" stroke="#2d1f28" stroke-width="1.5"/>
+    <path d="M20 10 Q18 4 16 8" fill="none" stroke="#2d1f28" stroke-width="1.5"/>
+  </svg>
+
+  <div class="sec-title" style="align-self:flex-start;max-width:720px;width:100%;">Experience &amp; education</div>
+
+  <div class="exp-wrap">
+    <div class="exp-card" style="transform:rotate(-0.5deg);">
+      <div class="exp-accent" style="background:var(--pink-d);"></div>
+      <div class="exp-content">
+        <div class="exp-top">
+          <div>
+            <div class="exp-role">Human Resources Manager Intern</div>
+            <div class="exp-company" style="color:var(--pink-d);">Uzi World Digital</div>
+          </div>
+          <div class="exp-date">April 2026 – Ongoing</div>
+        </div>
+        <div class="exp-desc">At Uzi World Digital, a growing digital-first agency, I support end-to-end talent acquisition and people operations across creative, marketing, and HR functions. I've conducted 15+ structured screenings and interviews for diverse roles — including Social Media Interns, Content Creators, HR Interns, and Graphic Designers — developing role-specific JDs and evaluation rubrics for each. I designed and coordinated onboarding journeys for new joiners, reducing first-week confusion and cutting ramp-up time noticeably. I also contributed to building the company's HR documentation from scratch, including policy drafts, offer letter templates, and internal process guides — creating a reliable HR knowledge base for a fast-growing team.</div>
+        <div class="exp-chips">
+          <span class="exp-chip" style="background:var(--pink-l);">15+ Candidates Screened</span>
+          <span class="exp-chip" style="background:var(--pink-l);">5+ Roles Recruited</span>
+          <span class="exp-chip" style="background:var(--mint-l);">Onboarding Design</span>
+          <span class="exp-chip" style="background:var(--lav-l);">JD &amp; Policy Writing</span>
+          <span class="exp-chip" style="background:var(--yellow-l);">Cross-functional Hiring</span>
+          <span class="exp-chip" style="background:var(--peach-l);">HR Docs from Scratch</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="exp-card" style="border-color:var(--dark);transform:rotate(0.4deg);">
+      <div class="exp-accent" style="background:var(--mint);"></div>
+      <div class="exp-content">
+        <div class="exp-top">
+          <div>
+            <div class="exp-role">BBA Human Resources</div>
+            <div class="exp-company" style="color:#2e8b57;">Dr. Ambedkar Institute of Management Studies &amp; Research</div>
+          </div>
+          <div class="exp-date" style="background:var(--mint-l);">Ongoing</div>
+        </div>
+        <div class="exp-desc">Building a rigorous foundation across the full HR spectrum: organizational behavior, employment law, strategic workforce planning, compensation design, and HR analytics. Complemented by self-driven learning and internationally recognized certifications.</div>
+        <div class="exp-chips">
+          <span class="exp-chip" style="background:var(--mint-l);">Organizational Behavior</span>
+          <span class="exp-chip" style="background:var(--mint-l);">Employment Law</span>
+          <span class="exp-chip" style="background:var(--mint-l);">HR Analytics</span>
+          <span class="exp-chip" style="background:var(--mint-l);">Workforce Planning</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cert-card" style="transform:rotate(-0.3deg);">
+      <div class="cert-icon-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#2e8b57" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+      </div>
+      <div>
+        <div class="cert-name">HR for People Managers</div>
+        <div class="cert-issuer">University of Minnesota · Coursera · 2024</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     SLIDE 4 — PROJECTS
+═════════════════════════════════════════ -->
+<section class="slide" id="slide-4">
+
+  <svg class="cutout" style="top:10%;left:3%;width:46px;" viewBox="0 0 40 40">
+    <!-- Star sparkle -->
+    <path d="M20 4 L22 18 L36 20 L22 22 L20 36 L18 22 L4 20 L18 18 Z" fill="#ffe566" stroke="#2d1f28" stroke-width="2"/>
+  </svg>
+
+  <svg class="cutout" style="bottom:18%;right:3%;width:50px;animation-delay:-1.8s;" viewBox="0 0 40 40">
+    <!-- Heart -->
+    <path d="M20 34 C20 34 4 22 4 12 A8 8 0 0 1 20 8 A8 8 0 0 1 36 12 C36 22 20 34 20 34Z" fill="#ffadd0" stroke="#2d1f28" stroke-width="2"/>
+  </svg>
+
+  <div class="sec-title" style="align-self:flex-start;max-width:780px;width:100%;">Key projects &amp; achievements</div>
+
+  <div class="projects-masonry">
+    <div class="proj-card" style="transform:rotate(-1deg);">
+      <div class="pushpin" style="background:var(--pink-d);"></div>
+      <div style="margin-top:10px;">
+        <div class="proj-num" style="color:var(--pink-d);">Initiative 01</div>
+        <div class="proj-title">Multi-role hiring pipeline</div>
+        <p class="proj-desc"><span class="proj-label" style="color:var(--pink-d);">Challenge: </span>Uzi World Digital needed to rapidly scale its team across creative and HR functions with no existing recruitment process.</p>
+        <p class="proj-desc"><span class="proj-label" style="color:var(--mint);">My contribution: </span>Built role-specific JDs, screening rubrics, and structured interview flows for 5+ distinct roles from scratch.</p>
+        <p class="proj-desc"><span class="proj-label" style="color:#7b52d9;">Outcome: </span>15+ candidates screened within weeks, with a consistent evaluation process that reduced guesswork.</p>
+        <div class="proj-foot" style="color:var(--pink-d);">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          15+ screened · 5+ roles filled
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-card" style="transform:rotate(1.2deg);">
+      <div class="pushpin" style="background:var(--mint);"></div>
+      <div style="margin-top:10px;">
+        <div class="proj-num" style="color:#2e8b57;">Initiative 02</div>
+        <div class="proj-title">Onboarding experience design</div>
+        <p class="proj-desc"><span class="proj-label" style="color:var(--pink-d);">Challenge: </span>New joiners were entering a fast-paced startup with no structured welcome process, leading to early confusion and slower integration.</p>
+        <p class="proj-desc"><span class="proj-label" style="color:var(--mint);">My contribution: </span>Designed a first-week onboarding flow including a welcome checklist, role-clarity document, and culture introduction session.</p>
+        <p class="proj-desc"><span class="proj-label" style="color:#7b52d9;">Outcome: </span>New hires reported feeling more prepared and connected, with visibly shorter ramp-up time.</p>
+        <div class="proj-foot" style="color:#2e8b57;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          Faster ramp-up · Stronger first impressions
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-card" style="transform:rotate(-0.5deg);">
+      <div class="pushpin" style="background:var(--lavender);"></div>
+      <div style="margin-top:10px;">
+        <div class="proj-num" style="color:#7b52d9;">Initiative 03</div>
+        <div class="proj-title">HR documentation &amp; policy system</div>
+        <p class="proj-desc"><span class="proj-label" style="color:var(--pink-d);">Challenge: </span>The company lacked any formal HR documentation — no offer templates, no policy references, no process guides.</p>
+        <p class="proj-desc"><span class="proj-label" style="color:var(--mint);">My contribution: </span>Created and organized the full HR document suite: offer letters, leave policy, conduct guidelines, and an internal HR handbook.</p>
+        <p class="proj-desc"><span class="proj-label" style="color:#7b52d9;">Outcome: </span>Built a reliable knowledge base that standardized communication and laid the compliance foundation for team growth.</p>
+        <div class="proj-foot" style="color:#7b52d9;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          HR knowledge base built from zero
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-card" style="transform:rotate(0.8deg);">
+      <div class="pushpin" style="background:var(--peach);"></div>
+      <div style="margin-top:10px;">
+        <div class="proj-num" style="color:#d2691e;">Initiative 04</div>
+        <div class="proj-title">Psychology-driven candidate evaluation</div>
+        <p class="proj-desc"><span class="proj-label" style="color:var(--pink-d);">Challenge: </span>Interviews were surface-level, focusing only on skills — missing cultural fit and long-term potential.</p>
+        <p class="proj-desc"><span class="proj-label" style="color:var(--mint);">My contribution: </span>Applied behavioral psychology principles to design interview question banks that assess motivation, resilience, and values alignment.</p>
+        <p class="proj-desc"><span class="proj-label" style="color:#7b52d9;">Outcome: </span>Hiring decisions became more holistic and intentional, with stronger post-hire alignment reported by team leads.</p>
+        <div class="proj-foot" style="color:#d2691e;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          Deeper, more human hiring decisions
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     SLIDE 5 — CERTIFICATIONS
+═════════════════════════════════════════ -->
+<section class="slide" id="slide-5">
+
+  <svg class="cutout" style="top:15%;right:5%;width:52px;" viewBox="0 0 40 40">
+    <!-- Flower again -->
+    <circle cx="20" cy="20" r="5" fill="#ffe566" stroke="#2d1f28" stroke-width="2"/>
+    <ellipse cx="20" cy="9" rx="4" ry="6" fill="#ffadd0" stroke="#2d1f28" stroke-width="2"/>
+    <ellipse cx="20" cy="31" rx="4" ry="6" fill="#c9b1ff" stroke="#2d1f28" stroke-width="2"/>
+    <ellipse cx="9" cy="20" rx="6" ry="4" fill="#8ce4b8" stroke="#2d1f28" stroke-width="2"/>
+    <ellipse cx="31" cy="20" rx="6" ry="4" fill="#96ceee" stroke="#2d1f28" stroke-width="2"/>
+  </svg>
+
+  <svg class="cutout" style="bottom:22%;left:4%;width:46px;animation-delay:-0.6s;" viewBox="0 0 40 40">
+    <!-- Bow -->
+    <path d="M20 20 L5 10 L5 30 Z" fill="#ffd6e7" stroke="#2d1f28" stroke-width="2"/>
+    <path d="M20 20 L35 10 L35 30 Z" fill="#c9b1ff" stroke="#2d1f28" stroke-width="2"/>
+    <circle cx="20" cy="20" r="5" fill="#ffe566" stroke="#2d1f28" stroke-width="2"/>
+    <line x1="20" y1="25" x2="17" y2="36" stroke="#2d1f28" stroke-width="2"/>
+    <line x1="20" y1="25" x2="23" y2="36" stroke="#2d1f28" stroke-width="2"/>
+  </svg>
+
+  <div class="sec-title" style="align-self:flex-start;max-width:700px;width:100%;" >Certifications</div>
+
+  <div class="certs-wrap">
+    <div class="cert-full-card" style="transform:rotate(-0.8deg);">
+      <div class="pushpin" style="background:var(--yellow);"></div>
+      <div class="cert-ribbon"></div>
+      <div style="width:56px;height:56px;background:var(--mint-l);border:3px solid var(--dark);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:3px 3px 0 var(--dark);">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#2e8b57" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+      </div>
+      <div style="margin-top:8px;">
+        <div style="font-family:var(--pixel);font-size:10px;color:var(--dark);margin-bottom:6px;line-height:1.5;">HR for People Managers Specialization</div>
+        <div style="font-size:12px;color:#2e8b57;font-weight:600;">University of Minnesota · Coursera</div>
+        <div style="margin-top:6px;">
+          <span style="font-size:10px;font-weight:700;background:var(--mint-l);border:2px solid var(--dark);border-radius:3px;padding:2px 10px;box-shadow:2px 2px 0 var(--dark);">2024</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fun encouragement card -->
+    <div class="cert-full-card" style="background:var(--pink-l);transform:rotate(0.6deg);">
+      <div class="pushpin" style="background:var(--pink-d);"></div>
+      <div style="padding-top:10px;">
+        <div style="font-family:var(--serif);font-style:italic;font-size:16px;color:var(--mid);line-height:1.7;">"Always learning. Always growing. The best HR professionals never stop investing in themselves."</div>
+        <div style="margin-top:10px;font-size:12px;color:var(--soft);font-weight:600;">— Sohani's learning philosophy</div>
+      </div>
+    </div>
+
+    <div class="cert-full-card" style="background:var(--lav-l);transform:rotate(-0.4deg);">
+      <div class="pushpin" style="background:var(--lavender);"></div>
+      <div style="padding-top:10px;width:100%;">
+        <div style="font-family:var(--pixel);font-size:9px;color:#7b52d9;margin-bottom:10px;">Currently pursuing</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          <span class="chip" style="background:var(--lav-l);">BBA Human Resources</span>
+          <span class="chip" style="background:var(--yellow-l);">Strategic Workforce Planning</span>
+          <span class="chip" style="background:var(--pink-l);">Employment Law</span>
+          <span class="chip" style="background:var(--mint-l);">HR Analytics</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     SLIDE 6 — CONTACT
+═════════════════════════════════════════ -->
+<section class="slide" id="slide-6">
+
+  <svg class="cutout" style="top:12%;right:4%;width:50px;" viewBox="0 0 40 40">
+    <!-- Coffee cup -->
+    <rect x="8" y="18" width="24" height="16" rx="0" fill="#ffd9b3" stroke="#2d1f28" stroke-width="2"/>
+    <rect x="8" y="14" width="24" height="6" rx="0" fill="#ffc38a" stroke="#2d1f28" stroke-width="2"/>
+    <rect x="30" y="20" width="6" height="8" rx="0" fill="none" stroke="#2d1f28" stroke-width="2"/>
+    <path d="M14 12 Q16 8 14 4" fill="none" stroke="#c9b1ff" stroke-width="2" stroke-linecap="round"/>
+    <path d="M20 10 Q22 6 20 2" fill="none" stroke="#c9b1ff" stroke-width="2" stroke-linecap="round"/>
+    <path d="M26 12 Q28 8 26 4" fill="none" stroke="#c9b1ff" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+
+  <svg class="cutout" style="bottom:18%;left:3%;width:44px;animation-delay:-2s;" viewBox="0 0 40 40">
+    <!-- Heart -->
+    <path d="M20 34 C20 34 4 22 4 12 A8 8 0 0 1 20 8 A8 8 0 0 1 36 12 C36 22 20 34 20 34Z" fill="#ffadd0" stroke="#2d1f28" stroke-width="2"/>
+    <path d="M20 30 C20 30 8 21 8 14" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+
+  <div class="sec-title" style="align-self:flex-start;max-width:720px;width:100%;">Get in touch</div>
+
+  <div class="contact-wrap">
+    <div>
+      <p class="contact-intro">I'm always open to conversations about HR, people culture, or exciting opportunities. Let's connect and build something meaningful together.</p>
+      <div class="contact-links">
+        <a class="contact-row" href="mailto:sohanig3105@gmail.com">
+          <div class="c-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          </div>
+          sohanig3105@gmail.com
+        </a>
+        <a class="contact-row" href="https://www.linkedin.com/in/sohani-g-04670a35a" target="_blank" rel="noopener">
+          <div class="c-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+          </div>
+          linkedin.com/in/sohani-g-04670a35a
+        </a>
+        <a class="contact-row" href="tel:+918830561650">
+          <div class="c-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.59 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.48 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          +91 88305 61650
+        </a>
+        <div class="contact-row">
+          <div class="c-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          Nagpur, Maharashtra, India
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form" style="transform:rotate(0.5deg);">
+      <div class="pushpin"></div>
+      <div id="contact-fields" style="margin-top:10px;">
+        <label class="f-label">Name</label>
+        <input class="f-input" type="text" id="f-name" placeholder="Your name" />
+        <label class="f-label">Email</label>
+        <input class="f-input" type="email" id="f-email" placeholder="your@email.com" />
+        <label class="f-label">Message</label>
+        <textarea class="f-input" id="f-msg" placeholder="What's on your mind?"></textarea>
+        <button class="btn btn-pink" style="width:100%;font-size:8px;" onclick="sendMsg()">Send message ✦</button>
+      </div>
+      <div class="form-success" id="form-success">
+        ✦ Message received! ✦<br><br>
+        Thank you for reaching out.<br>
+        Sohani will be in touch soon ✿
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SLIDE DOTS ── -->
+<div class="slide-nav" id="dot-nav">
+  <div class="slide-dot active" onclick="goTo(0)"></div>
+  <div class="slide-dot" onclick="goTo(1)"></div>
+  <div class="slide-dot" onclick="goTo(2)"></div>
+  <div class="slide-dot" onclick="goTo(3)"></div>
+  <div class="slide-dot" onclick="goTo(4)"></div>
+  <div class="slide-dot" onclick="goTo(5)"></div>
+  <div class="slide-dot" onclick="goTo(6)"></div>
+</div>
+
+<!-- ── FOOTER ── -->
+<div class="footer-bar">
+  <span>"Built with people in mind — always."</span>
+  <small>Sohani Ghugul · HR Manager · 2024</small>
+</div>
+
+<script>
+// ── SLIDESHOW LOGIC ──
+const TOTAL = 7;
+let current = 0;
+let animating = false;
+
+const slides = Array.from(document.querySelectorAll('.slide'));
+const dots   = Array.from(document.querySelectorAll('.slide-dot'));
+const navBtns = Array.from(document.querySelectorAll('.nav-links button'));
+
+function goTo(idx, dir) {
+  if (animating || idx === current || idx < 0 || idx >= TOTAL) return;
+  animating = true;
+
+  const outClass = (dir === undefined ? (idx > current ? 'exit-left' : 'exit-right') : (dir === 1 ? 'exit-left' : 'exit-right'));
+
+  // Exit current
+  slides[current].classList.remove('active');
+  slides[current].classList.add(outClass);
+
+  // Remove exit class after transition
+  const old = slides[current];
+  setTimeout(() => { old.classList.remove('exit-left','exit-right'); }, 600);
+
+  current = idx;
+
+  // Enter new
+  slides[current].classList.add('active');
+  slides[current].scrollTop = 0;
+
+  // Update UI
+  dots.forEach((d, i) => d.classList.toggle('active', i === current));
+  navBtns.forEach((b, i) => b.classList.toggle('active-link', i === current));
+  document.getElementById('btn-prev').disabled = current === 0;
+  document.getElementById('btn-next').disabled = current === TOTAL - 1;
+
+  // Animate skill bars when on skills slide
+  if (current === 2) animateBars();
+
+  setTimeout(() => { animating = false; }, 600);
+}
+
+function next() { goTo(current + 1, 1); }
+function prev() { goTo(current - 1, -1); }
+
+// Arrow key support
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next();
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prev();
+});
+
+// Touch / swipe support
+let touchX = null;
+document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; });
+document.addEventListener('touchend', e => {
+  if (touchX === null) return;
+  const dx = e.changedTouches[0].clientX - touchX;
+  if (Math.abs(dx) > 50) { dx < 0 ? next() : prev(); }
+  touchX = null;
+});
+
+// ── SKILL BARS ──
+let barsAnimated = false;
+function animateBars() {
+  if (barsAnimated) return;
+  barsAnimated = true;
+  document.querySelectorAll('.skill-bar').forEach(bar => {
+    const w = bar.getAttribute('data-w');
+    setTimeout(() => { bar.style.width = w + '%'; }, 200);
+  });
+}
+
+// ── SPARKLE CURSOR ──
+const SPARKLE_SHAPES = ['★','✦','✿','♥','✸','◆'];
+const SPARKLE_COLORS = ['#ffadd0','#c9b1ff','#8ce4b8','#ffe566','#96ceee','#ffc38a'];
+
+document.addEventListener('mousemove', e => {
+  if (Math.random() > 0.35) return;
+  const s = document.createElement('div');
+  s.className = 'sparkle';
+  s.textContent = SPARKLE_SHAPES[Math.floor(Math.random() * SPARKLE_SHAPES.length)];
+  s.style.cssText = `
+    left: ${e.clientX + (Math.random()*20-10)}px;
+    top:  ${e.clientY + (Math.random()*20-10)}px;
+    color: ${SPARKLE_COLORS[Math.floor(Math.random() * SPARKLE_COLORS.length)]};
+    font-size: ${10 + Math.random()*14}px;
+    line-height: 1;
+    -webkit-text-stroke: 1px rgba(0,0,0,0.2);
+  `;
+  document.body.appendChild(s);
+  setTimeout(() => s.remove(), 800);
+});
+
+// ── CONTACT FORM ──
+function sendMsg() {
+  const name = document.getElementById('f-name').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const msg  = document.getElementById('f-msg').value.trim();
+  if (!name || !email || !msg) {
+    // Shake the form
+    const form = document.querySelector('.contact-form');
+    form.style.animation = 'none';
+    form.style.transform = 'rotate(0.5deg) translateX(-6px)';
+    setTimeout(() => { form.style.transform = 'rotate(0.5deg) translateX(6px)'; }, 80);
+    setTimeout(() => { form.style.transform = 'rotate(0.5deg) translateX(0)'; }, 160);
+    return;
+  }
+  document.getElementById('contact-fields').style.display = 'none';
+  document.getElementById('form-success').style.display = 'block';
+}
+
+// ── INIT ──
+document.getElementById('btn-prev').disabled = true;
+navBtns[0].classList.add('active-link');
+</script>
+</body>
+</html>
